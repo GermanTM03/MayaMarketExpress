@@ -5,6 +5,7 @@ const connectDB = require('./config/db');
 const userRoutes = require('./routes/userRoutes');
 const productRoutes = require('./routes/productRoutes'); // Importar rutas de productos
 const swaggerSetup = require('./swagger');
+const authRoutes = require('./routes/authRoutes'); // Importar rutas de autenticación
 
 require('dotenv').config();
 
@@ -19,6 +20,7 @@ app.use(bodyParser.urlencoded({ extended: true })); // Manejar formularios
 // Rutas
 app.use('/api/users', userRoutes);
 app.use('/api/products', productRoutes); // Registrar las rutas de productos
+app.use('/api/auth', authRoutes);
 
 // Documentación Swagger
 swaggerSetup(app);
