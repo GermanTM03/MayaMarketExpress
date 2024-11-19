@@ -5,8 +5,8 @@ const connectDB = require('./config/db');
 const userRoutes = require('./routes/userRoutes');
 const productRoutes = require('./routes/productRoutes');
 const authRoutes = require('./routes/authRoutes'); 
-const swaggerUsers = require('./swaggerUsers'); 
-const swaggerProducts = require('./swaggerProducts'); 
+const swaggerUsers = require('./Swaggers/swaggerUsers'); 
+const swaggerProducts = require('./Swaggers/swaggerProducts'); 
 
 require('dotenv').config();
 
