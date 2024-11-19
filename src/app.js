@@ -3,9 +3,10 @@ const bodyParser = require('body-parser');
 const cors = require('cors');
 const connectDB = require('./config/db');
 const userRoutes = require('./routes/userRoutes');
-const productRoutes = require('./routes/productRoutes'); // Importar rutas de productos
-const swaggerSetup = require('./swagger');
-const authRoutes = require('./routes/authRoutes'); // Importar rutas de autenticación
+const productRoutes = require('./routes/productRoutes');
+const authRoutes = require('./routes/authRoutes'); 
+const swaggerUsers = require('./swaggerUsers'); 
+const swaggerProducts = require('./swaggerProducts'); 
 
 require('dotenv').config();
 
@@ -15,15 +16,16 @@ const PORT = process.env.PORT || 3000;
 // Middlewares
 app.use(cors());
 app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: true })); // Manejar formularios
+app.use(bodyParser.urlencoded({ extended: true }));
 
 // Rutas
 app.use('/api/users', userRoutes);
-app.use('/api/products', productRoutes); // Registrar las rutas de productos
+app.use('/api/products', productRoutes);
 app.use('/api/auth', authRoutes);
 
 // Documentación Swagger
-swaggerSetup(app);
+swaggerUsers(app); // Documentación para usuarios
+swaggerProducts(app); // Documentación para productos
 
 // Conectar a la base de datos
 connectDB();

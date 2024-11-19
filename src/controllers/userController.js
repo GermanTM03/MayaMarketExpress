@@ -2,31 +2,36 @@ const bcrypt = require('bcryptjs');
 const User = require('../models/userModel');
 
 const updateUser = async (req, res) => {
-    const { id } = req.params;
-    const { name, lastName, phone, gender } = req.body;
-  
-    try {
-      const user = await User.findById(id);
-  
-      if (!user) {
-        return res.status(404).json({ message: 'Usuario no encontrado' });
-      }
-  
-      // Actualizar los campos permitidos
-      user.name = name || user.name;
-      user.lastName = lastName || user.lastName;
-      user.phone = phone || user.phone;
-      user.gender = gender || user.gender;
-  
-      const updatedUser = await user.save();
-      res.status(200).json({
-        message: 'Usuario actualizado exitosamente',
-        user: updatedUser,
-      });
-    } catch (error) {
-      res.status(500).json({ message: 'Error al actualizar el usuario', error: error.message });
+  const { id } = req.params;
+  const { name, lastName } = req.body;
+  const image = req.file ? req.file.path : undefined; // Obtener la imagen del archivo cargado
+
+  try {
+    const user = await User.findById(id);
+
+    if (!user) {
+      return res.status(404).json({ message: 'Usuario no encontrado' });
     }
-  };
+
+    // Actualizar solo los campos permitidos
+    if (name) user.name = name;
+    if (lastName) user.lastName = lastName;
+    if (image) user.image = image;
+
+    const updatedUser = await user.save();
+    res.status(200).json({
+      message: 'Usuario actualizado exitosamente',
+      user: {
+        id: updatedUser.id,
+        name: updatedUser.name,
+        lastName: updatedUser.lastName,
+        image: updatedUser.image,
+      },
+    });
+  } catch (error) {
+    res.status(500).json({ message: 'Error al actualizar el usuario', error: error.message });
+  }
+};
 
   
   const updateUserRole = async (req, res) => {

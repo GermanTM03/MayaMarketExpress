@@ -98,7 +98,7 @@ router.get('/:id', getUserById);
  * @swagger
  * /api/users/{id}:
  *   put:
- *     summary: Actualiza un usuario existente
+ *     summary: Actualiza la imagen, el nombre y el apellido de un usuario
  *     parameters:
  *       - in: path
  *         name: id
@@ -109,27 +109,53 @@ router.get('/:id', getUserById);
  *     requestBody:
  *       required: true
  *       content:
- *         application/json:
+ *         multipart/form-data: # Asegúrate de que este tipo de contenido esté especificado
  *           schema:
  *             type: object
  *             properties:
  *               name:
  *                 type: string
+ *                 example: Juan
  *               lastName:
  *                 type: string
- *               phone:
+ *                 example: Perez
+ *               image:
  *                 type: string
- *               gender:
- *                 type: string
+ *                 format: binary
+ *                 description: Imagen del usuario
  *     responses:
  *       200:
  *         description: Usuario actualizado exitosamente
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: Usuario actualizado exitosamente
+ *                 user:
+ *                   type: object
+ *                   properties:
+ *                     id:
+ *                       type: string
+ *                       example: 673bf5082092e837eb18fb30
+ *                     name:
+ *                       type: string
+ *                       example: Juan
+ *                     lastName:
+ *                       type: string
+ *                       example: Perez
+ *                     image:
+ *                       type: string
+ *                       example: https://example.com/user-image.jpg
  *       404:
  *         description: Usuario no encontrado
  *       500:
  *         description: Error interno del servidor
  */
-router.put('/:id', updateUser);
+
+router.put('/:id', upload.single('image'), updateUser);
 
 /**
  * @swagger
