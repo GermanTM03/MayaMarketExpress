@@ -28,6 +28,10 @@ const swaggerOptions = {
               type: 'string',
               example: '64abc098xyz765fg432j',
             },
+            name: { // Asegúrate de que esté aquí
+              type: 'string',
+              example: 'MiProducto',
+            },
             image_1: {
               type: 'string',
               example: 'https://res.cloudinary.com/tu-cloud/image/upload/v123456/image1.jpg',

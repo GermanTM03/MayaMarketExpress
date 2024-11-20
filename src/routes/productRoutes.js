@@ -19,11 +19,13 @@ const {
  */
 
 /**
+/**
  * @swagger
  * /api/products:
  *   post:
  *     summary: Crea un nuevo producto con imágenes
- *     tags: [Products]
+ *     tags:
+ *       - Products
  *     requestBody:
  *       required: true
  *       content:
@@ -35,6 +37,10 @@ const {
  *                 type: string
  *                 description: ID del usuario que sube el producto
  *                 example: 64abc098xyz765fg432j
+ *               name:
+ *                 type: string
+ *                 description: Nombre del producto
+ *                 example: Mi Producto
  *               image_1:
  *                 type: string
  *                 format: binary
@@ -86,6 +92,7 @@ const {
  *       500:
  *         description: Error interno del servidor
  */
+
 router.post(
   '/',
   upload.fields([
