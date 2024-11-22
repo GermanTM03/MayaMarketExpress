@@ -4,6 +4,7 @@ const Product = require('../models/productModel');
 // Crear un producto
 const createProduct = async (req, res) => {
   const { userId,name, stock, price, quantity, size, status } = req.body;
+  console.log("product")
 
   if (!userId || !name || !stock || !price || !quantity || !size || !req.files) {
     return res.status(400).json({ message: 'Faltan campos requeridos o imágenes.' });
