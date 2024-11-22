@@ -66,7 +66,6 @@ const getProductsByUserId = async (req, res) => {
   }
 };
 
-
 // Obtener un producto por ID
 const getProductById = async (req, res) => {
   const { id } = req.params;
@@ -187,6 +186,7 @@ module.exports = {
   getAllProducts,
   getProductById,
   updateProduct,
-  deleteProduct,  getProductsByUserId, // Nueva función exportada
+  deleteProduct,
+  getProductsByUserId, // Exporta la nueva función
 
 };
