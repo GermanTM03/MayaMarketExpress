@@ -121,7 +121,39 @@ router.post(
  *       500:
  *         description: Error interno del servidor
  */
+
 router.get('/', getAllProducts);
+
+
+/**
+ * @swagger
+ * /api/products/user/{userId}:
+ *   get:
+ *     summary: Obtiene productos por ID de usuario
+ *     tags: [Products]
+ *     parameters:
+ *       - in: path
+ *         name: userId
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: ID del usuario
+ *     responses:
+ *       200:
+ *         description: Productos obtenidos exitosamente
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 $ref: '#/components/schemas/Product'
+ *       404:
+ *         description: No se encontraron productos
+ *       500:
+ *         description: Error interno del servidor
+ */
+router.get('/user/:userId', getProductsByUserId);
+
 
 /**
  * @swagger

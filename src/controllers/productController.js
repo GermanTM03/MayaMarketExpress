@@ -46,6 +46,26 @@ const getAllProducts = async (req, res) => {
     res.status(500).json({ message: 'Error al obtener los productos', error: error.message });
   }
 };
+// Obtener productos por ID de usuario
+const getProductsByUserId = async (req, res) => {
+  const { userId } = req.params;
+
+  // Validar el formato del ID
+  if (!mongoose.Types.ObjectId.isValid(userId)) {
+    return res.status(400).json({ message: 'ID de usuario inválido.' });
+  }
+
+  try {
+    const products = await Product.find({ userId });
+    if (!products || products.length === 0) {
+      return res.status(404).json({ message: 'No se encontraron productos para este usuario.' });
+    }
+    res.status(200).json(products);
+  } catch (error) {
+    res.status(500).json({ message: 'Error al obtener productos del usuario', error: error.message });
+  }
+};
+
 
 // Obtener un producto por ID
 const getProductById = async (req, res) => {
@@ -167,5 +187,6 @@ module.exports = {
   getAllProducts,
   getProductById,
   updateProduct,
-  deleteProduct,
+  deleteProduct,  getProductsByUserId, // Nueva función exportada
+
 };
