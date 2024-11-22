@@ -136,7 +136,75 @@ const removeFromCart = async (req, res) => {
       res.status(500).json({ message: 'Error al actualizar la cantidad del producto', error: error.message });
     }
   };
-  
+  // Vaciar el carrito
+const clearCart = async (req, res) => {
+  const { userId } = req.body;
+
+  if (!userId) {
+    return res.status(400).json({ message: 'Faltan campos requeridos' });
+  }
+
+  try {
+    const cart = await Cart.findOne({ userId });
+
+    if (!cart) {
+      return res.status(404).json({ message: 'Carrito no encontrado' });
+    }
+
+    // Vaciar los items del carrito
+    cart.items = [];
+    await cart.save();
+
+    res.status(200).json({ message: 'Carrito vaciado exitosamente', cart });
+  } catch (error) {
+    res.status(500).json({ message: 'Error al vaciar el carrito', error: error.message });
+  }
+};
+/// Completar pago
+const completePayment = async (req, res) => {
+  const { userId } = req.body;
+
+  if (!userId) {
+    return res.status(400).json({ message: 'Faltan campos requeridos' });
+  }
+
+  try {
+    const cart = await Cart.findOne({ userId });
+
+    if (!cart || cart.items.length === 0) {
+      return res.status(404).json({ message: 'El carrito está vacío o no existe' });
+    }
+
+    for (const item of cart.items) {
+      const product = await Product.findById(item.productId);
+
+      if (!product) {
+        return res.status(404).json({ message: `Producto con ID ${item.productId} no encontrado` });
+      }
+
+      if (product.stock < item.quantity) {
+        return res.status(400).json({
+          message: `Stock insuficiente para el producto con ID ${item.productId}. Disponible: ${product.stock}, Requerido: ${item.quantity}`,
+        });
+      }
+
+      // Reducir el stock
+      product.stock -= item.quantity;
+      await product.save();
+    }
+
+    // Vaciar el carrito tras completar el pago
+    cart.items = [];
+    await cart.save();
+
+    res.status(200).json({ message: 'Pago completado y carrito vaciado exitosamente' });
+  } catch (error) {
+    res.status(500).json({ message: 'Error al completar el pago', error: error.message });
+  }
+};
+
+
+
   
 
 module.exports = {
@@ -144,4 +212,6 @@ module.exports = {
     getCartByUserId,
     removeFromCart,
     updateProductQuantity,
+    clearCart,
+    completePayment,
 };
