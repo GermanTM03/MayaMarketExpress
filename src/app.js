@@ -8,6 +8,7 @@ const authRoutes = require('./routes/authRoutes');
 const swaggerUsers = require('./Swaggers/swaggerUsers'); 
 const swaggerProducts = require('./Swaggers/swaggerProducts'); 
 const cartRoutes = require('./routes/cartRoutes');
+const orderRoutes = require('./routes/orderRoutes');
 
 require('dotenv').config();
 
@@ -31,6 +32,7 @@ app.use('/api/users', userRoutes);
 app.use('/api/products', productRoutes);
 app.use('/api/auth', authRoutes);
 app.use('/api/cart', cartRoutes);
+app.use('/api/orders', orderRoutes);
 
 // Documentación Swagger
 swaggerUsers(app); // Documentación para usuarios

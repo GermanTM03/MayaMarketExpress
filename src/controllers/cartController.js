@@ -1,5 +1,7 @@
 const Cart = require('../models/cartModel');
 const Product = require('../models/productModel');
+const mongoose = require('mongoose'); // Importa mongoose
+const Almacen = require('../models/almacenModel'); // Asegúrate de que la ruta sea correcta
 
 // Agregar al carrito
 const addToCart = async (req, res) => {
@@ -160,7 +162,8 @@ const clearCart = async (req, res) => {
     res.status(500).json({ message: 'Error al vaciar el carrito', error: error.message });
   }
 };
-/// Completar pago
+
+
 const completePayment = async (req, res) => {
   const { userId } = req.body;
 
@@ -168,40 +171,68 @@ const completePayment = async (req, res) => {
     return res.status(400).json({ message: 'Faltan campos requeridos' });
   }
 
+  const session = await mongoose.startSession(); // Inicia una sesión para manejar transacciones
+
   try {
-    const cart = await Cart.findOne({ userId });
+    session.startTransaction(); // Comienza la transacción
+
+    // Buscar el carrito del usuario
+    const cart = await Cart.findOne({ userId }).session(session);
 
     if (!cart || cart.items.length === 0) {
       return res.status(404).json({ message: 'El carrito está vacío o no existe' });
     }
 
+    // Iterar sobre los productos en el carrito
     for (const item of cart.items) {
-      const product = await Product.findById(item.productId);
+      const product = await Product.findById(item.productId).session(session);
 
       if (!product) {
-        return res.status(404).json({ message: `Producto con ID ${item.productId} no encontrado` });
+        throw new Error(`Producto con ID ${item.productId} no encontrado`);
       }
 
+      // Verificar si hay suficiente stock
       if (product.stock < item.quantity) {
-        return res.status(400).json({
-          message: `Stock insuficiente para el producto con ID ${item.productId}. Disponible: ${product.stock}, Requerido: ${item.quantity}`,
-        });
+        throw new Error(
+          `Stock insuficiente para el producto con ID ${item.productId}. Disponible: ${product.stock}, Requerido: ${item.quantity}`
+        );
       }
 
-      // Reducir el stock
-      product.stock -= item.quantity;
-      await product.save();
+      // Reducir el stock usando $inc
+      await Product.updateOne(
+        { _id: item.productId },
+        { $inc: { stock: - item.quantity } }, // Resta la cantidad solicitada
+        { session }
+      );
+
+      // Crear un registro en Almacen
+      const almacenItem = new Almacen({
+        userId,
+        productId: item.productId,
+        quantity: item.quantity,
+        status: 'pendiente', // Estado inicial
+      });
+
+      await almacenItem.save({ session });
     }
 
-    // Vaciar el carrito tras completar el pago
+    // Vaciar el carrito después del pago
     cart.items = [];
-    await cart.save();
+    await cart.save({ session });
+
+    // Completar la transacción
+    await session.commitTransaction();
+    session.endSession();
 
     res.status(200).json({ message: 'Pago completado y carrito vaciado exitosamente' });
   } catch (error) {
+    await session.abortTransaction(); // Revertir los cambios si ocurre algún error
+    session.endSession();
+
     res.status(500).json({ message: 'Error al completar el pago', error: error.message });
   }
 };
+
 
 
 

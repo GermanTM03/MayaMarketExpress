@@ -10,7 +10,7 @@ const {
   markAsPending, // Nueva función
   deleteProduct,
   getProductsByUserId, // Asegúrate de incluir esta función
-
+  updateProductQuantity,
 } = require('../controllers/productController');
 
 /**
@@ -276,6 +276,47 @@ router.delete('/:id', deleteProduct);
  *         description: Error interno del servidor
  */
 router.get('/user/:userId', getProductsByUserId);
+
+/**
+ * @swagger
+ * /api/products/{id}/quantity:
+ *   patch:
+ *     summary: Actualiza la cantidad de un producto
+ *     tags: [Products]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: ID del producto
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               quantity:
+ *                 type: integer
+ *                 description: Nueva cantidad del producto
+ *                 example: 5
+ *     responses:
+ *       200:
+ *         description: Cantidad del producto actualizada exitosamente
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Product'
+ *       400:
+ *         description: ID inválido o cantidad no válida
+ *       404:
+ *         description: Producto no encontrado
+ *       500:
+ *         description: Error interno del servidor
+ */
+router.patch('/:id/quantity', updateProductQuantity);
+
 
 
 /**

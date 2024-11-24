@@ -152,6 +152,46 @@ const markAsSold = async (req, res) => {
   }
 };
 
+
+const updateProductQuantity = async (req, res) => {
+  const { id } = req.params; // ID del producto
+  const { quantity } = req.body; // Nueva cantidad
+
+  // Validar el ID y la cantidad
+  if (!mongoose.Types.ObjectId.isValid(id)) {
+    return res.status(400).json({ message: 'ID de producto inválido.' });
+  }
+
+  if (quantity == null || quantity < 0) {
+    return res.status(400).json({ message: 'La cantidad es requerida y debe ser mayor o igual a 0.' });
+  }
+
+  try {
+    // Actualizar la cantidad directamente
+    const updatedProduct = await Product.findByIdAndUpdate(
+      id,
+      { quantity }, // Campo a actualizar
+      { new: true, runValidators: true } // Retorna el producto actualizado y ejecuta validaciones solo en el campo modificado
+    );
+
+    if (!updatedProduct) {
+      return res.status(404).json({ message: 'Producto no encontrado.' });
+    }
+
+    res.status(200).json({
+      message: 'Cantidad actualizada exitosamente.',
+      product: updatedProduct,
+    });
+  } catch (error) {
+    res.status(500).json({
+      message: 'Error al actualizar la cantidad del producto.',
+      error: error.message,
+    });
+  }
+};
+
+
+
 const markAsPending = async (req, res) => {
     const { id } = req.params;
   
@@ -188,5 +228,5 @@ module.exports = {
   updateProduct,
   deleteProduct,
   getProductsByUserId, // Exporta la nueva función
-
+  updateProductQuantity,
 };
