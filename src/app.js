@@ -15,14 +15,13 @@ require('dotenv').config();
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// Middlewares
 const corsOptions = {
-    origin: '*', // Permitir todos los orígenes
-    methods: ['GET', 'POST', 'PUT', 'DELETE'],
-    allowedHeaders: ['Content-Type', 'Authorization'],
-  };
+  origin: '*', // Permitir cualquier origen
+  methods: ['GET', 'POST', 'PUT', 'DELETE'],
+  allowedHeaders: ['Content-Type'], // Remueve 'Authorization' si usas '*'
+};
+app.use(cors(corsOptions));
 
-  app.use(cors(corsOptions));
   
   app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
