@@ -23,6 +23,12 @@ const createOrder = async (req, res) => {
         },
       },
     ],
+    application_context: {
+      return_url: 'https://tu-dominio.com/success', // URL para éxito
+      cancel_url: 'https://tu-dominio.com/cancel',  // URL para cancelación
+      brand_name: 'Tu Marca', // Opcional: nombre de la marca que aparecerá en PayPal
+      landing_page: 'LOGIN', // Opcional: muestra una página de inicio de sesión primero
+    },
   });
 
   try {
