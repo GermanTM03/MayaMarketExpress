@@ -22,6 +22,8 @@ const loginUser = async (req, res) => {
     res.status(200).json({
       id: user._id,
       name: user.name,
+      role: user.role,
+      
     });
   } catch (error) {
     res.status(500).json({ message: 'Error en el servidor', error: error.message });
