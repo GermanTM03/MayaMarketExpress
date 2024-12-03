@@ -12,6 +12,25 @@ const getAllOrders = async (req, res) => {
       res.status(500).json({ message: 'Error al obtener los pedidos', error: error.message });
     }
   };
+  // Obtener un pedido por su ID
+const getOrderById = async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    const order = await Almacen.findById(id)
+      .populate('userId', 'name email') // Poblar datos de usuario
+      .populate('productId', 'name price'); // Poblar datos de producto
+
+    if (!order) {
+      return res.status(404).json({ message: 'Pedido no encontrado' });
+    }
+
+    res.status(200).json(order);
+  } catch (error) {
+    res.status(500).json({ message: 'Error al obtener el pedido', error: error.message });
+  }
+};
+
 
 // Obtener pedidos por ID de usuario
 const getOrdersByUserId = async (req, res) => {
@@ -139,4 +158,6 @@ module.exports = {
   markAsAlmacenado,
   deleteOrder,
   markAsCompletado,
+  getOrderById,
+
 };

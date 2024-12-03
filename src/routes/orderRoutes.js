@@ -7,6 +7,7 @@ const {
   markAsPedido,
   markAsAlmacenado,
   deleteOrder,
+  getOrderById,
   markAsCompletado,
 } = require('../controllers/orderController');
 
@@ -30,6 +31,29 @@ const {
  *         description: Error interno del servidor
  */
 router.get('/', getAllOrders);
+
+/**
+ * @swagger
+ * /api/orders/{id}:
+ *   get:
+ *     summary: Obtiene un pedido por su ID
+ *     tags: [Orders]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: ID del pedido
+ *     responses:
+ *       200:
+ *         description: Pedido obtenido exitosamente
+ *       404:
+ *         description: Pedido no encontrado
+ *       500:
+ *         description: Error interno del servidor
+ */
+router.get('/:id', getOrderById);
 
 /**
  * @swagger
