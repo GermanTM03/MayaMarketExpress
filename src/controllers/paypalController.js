@@ -18,7 +18,7 @@ const createOrder = async (req, res) => {
     purchase_units: [
       {
         amount: {
-          currency_code: 'USD', // Cambiar a la moneda necesaria
+          currency_code: 'MXN', // Cambiar a la moneda necesaria
           value: totalAmount,
         },
       },
