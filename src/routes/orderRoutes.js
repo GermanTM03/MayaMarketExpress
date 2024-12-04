@@ -8,6 +8,7 @@ const {
   markAsAlmacenado,
   deleteOrder,
   getOrderById,
+  getOrdersByProductUserId,
   markAsCompletado,
 } = require('../controllers/orderController');
 
@@ -54,6 +55,30 @@ router.get('/', getAllOrders);
  *         description: Error interno del servidor
  */
 router.get('/:id', getOrderById);
+
+/**
+ * @swagger
+ * /api/orders/product/{userId}:
+ *   get:
+ *     summary: Obtiene los pedidos asociados a un usuario basado en el producto
+ *     tags: [Orders]
+ *     parameters:
+ *       - in: path
+ *         name: userId
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: ID del usuario asociado al producto
+ *     responses:
+ *       200:
+ *         description: Pedidos obtenidos exitosamente
+ *       404:
+ *         description: No se encontraron pedidos para este usuario basado en el producto
+ *       500:
+ *         description: Error interno del servidor
+ */
+router.get('/product/:userId', getOrdersByProductUserId);
+
 
 /**
  * @swagger

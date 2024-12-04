@@ -6,12 +6,54 @@ const getAllOrders = async (req, res) => {
     try {
       const orders = await Almacen.find({ status: { $in: ['pendiente', 'almacenado'] } })
         .populate('userId', 'name email') // Poblar datos de usuario
-        .populate('productId', 'name price'); // Poblar datos de producto
+        .populate('productId', 'userId name price'); // Poblar datos de producto
       res.status(200).json(orders);
     } catch (error) {
       res.status(500).json({ message: 'Error al obtener los pedidos', error: error.message });
     }
   };
+  
+  const getOrdersByProductUserId = async (req, res) => {
+    const { userId } = req.params;
+  
+    try {
+      // Obtener todos los pedidos con los datos poblados
+      const orders = await Almacen.find()
+        .populate('userId', 'name email') // Poblar datos de usuario
+        .populate('productId', 'userId name price'); // Poblar datos de producto
+  
+      // Filtrar en memoria
+      const filteredOrders = orders.filter(order => order.productId.userId == userId);
+  
+      if (filteredOrders.length === 0) {
+        return res.status(404).json({ message: 'No se encontraron pedidos para este userId de producto' });
+      }
+  
+      res.status(200).json(filteredOrders);
+    } catch (error) {
+      res.status(500).json({ message: 'Error al obtener los pedidos', error: error.message });
+    }
+  };
+  
+  
+  // Obtener pedidos por ID de usuario
+  const getOrdersByUserId = async (req, res) => {
+    const { userId } = req.params;
+    
+    try {
+      const orders = await Almacen.find({ userId })
+      .populate('productId', 'userId name price') // Poblar datos de producto
+      .populate('userId', 'name email'); // Poblar datos de usuario
+      if (!orders || orders.length === 0) {
+        return res.status(404).json({ message: 'No se encontraron pedidos para este usuario' });
+      }
+      res.status(200).json(orders);
+    } catch (error) {
+      res.status(500).json({ message: 'Error al obtener los pedidos del usuario', error: error.message });
+    }
+  };
+
+
   // Obtener un pedido por su ID
 const getOrderById = async (req, res) => {
   const { id } = req.params;
@@ -19,7 +61,7 @@ const getOrderById = async (req, res) => {
   try {
     const order = await Almacen.findById(id)
       .populate('userId', 'name email') // Poblar datos de usuario
-      .populate('productId', 'name price'); // Poblar datos de producto
+      .populate('productId', 'userId name price'); // Poblar datos de producto
 
     if (!order) {
       return res.status(404).json({ message: 'Pedido no encontrado' });
@@ -28,24 +70,6 @@ const getOrderById = async (req, res) => {
     res.status(200).json(order);
   } catch (error) {
     res.status(500).json({ message: 'Error al obtener el pedido', error: error.message });
-  }
-};
-
-
-// Obtener pedidos por ID de usuario
-const getOrdersByUserId = async (req, res) => {
-  const { userId } = req.params;
-
-  try {
-    const orders = await Almacen.find({ userId })
-      .populate('productId', 'name price') // Poblar datos de producto
-      .populate('userId', 'name email'); // Poblar datos de usuario
-    if (!orders || orders.length === 0) {
-      return res.status(404).json({ message: 'No se encontraron pedidos para este usuario' });
-    }
-    res.status(200).json(orders);
-  } catch (error) {
-    res.status(500).json({ message: 'Error al obtener los pedidos del usuario', error: error.message });
   }
 };
 
@@ -159,5 +183,6 @@ module.exports = {
   deleteOrder,
   markAsCompletado,
   getOrderById,
+  getOrdersByProductUserId
 
 };
