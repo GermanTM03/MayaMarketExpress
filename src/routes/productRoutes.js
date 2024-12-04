@@ -43,6 +43,10 @@ const {
  *                 type: string
  *                 description: Nombre del producto
  *                 example: Mi Producto
+ *               category:
+ *                type: string
+ *                description: Categoría del producto
+ *                example: Ropa
  *               image_1:
  *                 type: string
  *                 format: binary

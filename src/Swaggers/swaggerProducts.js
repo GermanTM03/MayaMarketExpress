@@ -32,6 +32,10 @@ const swaggerOptions = {
               type: 'string',
               example: 'MiProducto',
             },
+            categories: {
+              type: 'string',
+              example: 'Ropa',
+            },
             image_1: {
               type: 'string',
               example: 'https://res.cloudinary.com/tu-cloud/image/upload/v123456/image1.jpg',
