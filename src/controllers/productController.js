@@ -6,7 +6,7 @@ const createProduct = async (req, res) => {
   const { userId,name,categories , stock, price, quantity, size, status } = req.body;
   console.log("product")
 
-  if (!userId || !name || !categories || !stock || !price || !quantity || !size || !req.files) {
+  if (!userId || !name||!categories || !stock || !price || !quantity || !size || !req.files) {
     return res.status(400).json({ message: 'Faltan campos requeridos o imágenes.' });
   }
 

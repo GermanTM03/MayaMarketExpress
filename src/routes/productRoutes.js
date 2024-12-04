@@ -43,7 +43,7 @@ const {
  *                 type: string
  *                 description: Nombre del producto
  *                 example: Mi Producto
- *               category:
+ *               categories:
  *                type: string
  *                description: Categoría del producto
  *                example: Ropa
